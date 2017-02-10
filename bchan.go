@@ -52,7 +52,7 @@ func (b *Bchan) On() {
 // and clears any prior queued up
 // old values. Call On() after set
 // to activate the new value.
-// See also Bcast that does Set()
+// See also Bcast() that does Set()
 // followed by On() in one call.
 //
 func (b *Bchan) Set(val int) {

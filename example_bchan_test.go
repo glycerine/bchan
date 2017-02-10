@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func ExampleBcastAck() {
+func Example() {
 
 	b := bchan.New(3)
 	go func() {
