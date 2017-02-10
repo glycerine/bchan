@@ -1,8 +1,9 @@
-// package bchan provides 1:M value-broadcasting channels
+// package bchan provides 1:M value-broadcasting channels.
 //
-// Receivers from bcast channels must be aware that they
-// are using a bcast channel and call BcastAck() after
-// every receive.
+// Receivers from bchan broadcast channels must be aware that they
+// are using a bchan.Ch channel and call BcastAck() after
+// every receive. Failure to do this will result in other
+// receivers blocking instead of receiving the broadcast value.
 //
 package bchan
 
