@@ -11,7 +11,7 @@ import (
 	"sync"
 )
 
-// Bchan is an 1:N non-blocking value-loadable channel.
+// Bchan is an 1:M non-blocking value-loadable channel.
 // The client needs to only know about one
 // rule: after a receive on Ch, you must call Bchan.BcastAck().
 //
