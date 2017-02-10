@@ -53,7 +53,7 @@ func TestBchan(t *testing.T) {
 	}
 
 	// and after Off, we should block
-	bc.Off()
+	bc.Clear()
 	select {
 	case <-bc.Ch:
 		t.Fatal("Clear() means recevie should have blocked.")

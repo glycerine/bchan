@@ -23,6 +23,6 @@ func Example() {
 	time.Sleep(20 * time.Millisecond)
 	b.Set(5)
 	time.Sleep(20 * time.Millisecond)
-	b.Off()
+	b.Clear()
 	time.Sleep(20 * time.Millisecond)
 }

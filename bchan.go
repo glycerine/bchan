@@ -28,11 +28,16 @@ type Bchan struct {
 // is wrong the Bchan will still function,
 // but you may get slower concurrency
 // than if the number is accurate. It
-// is fine to overestimate the diameter;
+// is fine to overestimate the diameter by
+// a little or even be off completely,
 // but the extra slots in the buffered channel
-// take up some memory and need service time
-// to be maintained.
+// take up some memory and will add
+// linearly to the service time
+// as they are maintained.
 func New(expectedDiameter int) *Bchan {
+	if expectedDiameter <= 0 {
+		expectedDiameter = 1
+	}
 	return &Bchan{
 		Ch: make(chan interface{}, expectedDiameter+1),
 	}
@@ -55,11 +60,19 @@ func (b *Bchan) On() {
 // See also Bcast() that does Set()
 // followed by On() in one call.
 //
-func (b *Bchan) Set(val int) {
+func (b *Bchan) Set(val interface{}) {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 	b.cur = val
 	b.drain()
+}
+
+// Get returns the currently set
+// broadcast value.
+func (b *Bchan) Get() interface{} {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	return b.cur
 }
 
 // Bcast is the common case of doing
@@ -75,15 +88,18 @@ func (b *Bchan) Bcast(val interface{}) {
 	b.fill()
 }
 
-// Off turns off broadcasting
-func (b *Bchan) Off() {
+// Clear turns off broadcasting and
+// empties the channel of any old values.
+func (b *Bchan) Clear() {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 	b.on = false
 	b.drain()
+	b.cur = nil
 }
 
-// drain all messages, leaving Ch empty.
+// drain all messages, leaving b.Ch empty.
+// Users typically want Clear() instead.
 func (b *Bchan) drain() {
 	// empty chan
 	for {
@@ -95,9 +111,9 @@ func (b *Bchan) drain() {
 	}
 }
 
-// BcastAck is to be called immediately after
-// the client receives on Ch. All
-// clients on every receive must call BcastAck after receiving
+// BcastAck must be called immediately after
+// a client receives on Ch. All
+// clients on every channel receive must call BcastAck after receiving
 // on the channel Ch. This makes such channels
 // self-servicing, as BcastAck will re-fill the
 // async channel with the current value.
