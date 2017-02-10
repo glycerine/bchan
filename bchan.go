@@ -1,3 +1,9 @@
+// package bchan provides 1:M value-broadcasting channels
+//
+// Receivers from bcast channels must be aware that they
+// are using a bcast channel and call BcastAck() after
+// every receive.
+//
 package bchan
 
 import (
